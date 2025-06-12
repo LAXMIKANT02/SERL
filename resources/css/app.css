@@ -1,14 +1,4 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.btn-glow {
-  background-color: #6366f1; /* indigo-500 */
-  color: white;
-  box-shadow: 0 0 15px #6366f1aa;
-  transition: all 0.3s ease-in-out;
-}
 
-.btn-glow:hover {
-  box-shadow: 0 0 25px #6366f1cc;
-  transform: translateY(-2px);
-}

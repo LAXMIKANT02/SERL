@@ -1,153 +1,242 @@
-<style>
-  /* Global Styling */
-  body {
-    background-color: #0f172a !important;
-    font-family: 'Segoe UI', sans-serif;
-  }
+<!-- layout.blade.php or dashboard.blade.php -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SERL - Emergency Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      background: linear-gradient(to right, #0f172a, #1e293b);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-  .navbar {
-    background-color: #1e293b;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #facc15;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
+    .navbar {
+      background: rgba(30, 41, 59, 0.95);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #facc15;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-  .navbar a {
-    color: #facc15;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 1rem;
-    transition: color 0.3s;
-  }
+    .navbar a, .navbar button {
+      color: #facc15;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 1rem;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
 
-  .navbar a:hover {
-    color: #fbbf24;
-  }
+    .navbar a:hover, .navbar button:hover {
+      color: #fde68a;
+      transform: scale(1.05);
+    }
 
-  .dashboard-container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+    .dashboard-container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
 
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
 
-  .dashboard-card {
-    background: #1e293b;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    color: #f1f5f9;
-    text-align: center;
-    min-height: 200px;
-    transition: transform 0.3s;
-  }
+    @media (min-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-  .dashboard-card:hover {
-    transform: scale(1.05);
-  }
+    .dashboard-card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      color: #f1f5f9;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
 
-  .sos-button {
-    width: 100%;
-    padding: 1rem;
-    margin: 0.5rem 0;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-  }
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+    }
 
-  .sos-button:hover {
-    transform: translateY(-3px);
-  }
+    .dashboard-card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      color: #e2e8f0;
+    }
 
-  .sos-fire { background-color: #dc2626; color: #fff; }
-  .sos-medical { background-color: #16a34a; color: #fff; }
-  .sos-police { background-color: #2563eb; color: #fff; }
-  .sos-secure { background-color: #eab308; color: #000; }
+    .contact-card {
+      background: linear-gradient(to bottom right, rgba(56, 189, 248, 0.08), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(96, 165, 250, 0.4);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+      transition: all 0.3s ease-in-out;
+    }
 
-  .map-container {
-    margin-top: 1rem;
-    height: 200px;
-    border-radius: 8px;
-    overflow: hidden;
-  }
+    .contact-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 28px rgba(96, 165, 250, 0.3);
+    }
 
-  .manage-link {
-    display: inline-block;
-    margin-top: 1rem;
-    color: #60a5fa;
-    text-decoration: underline;
-  }
+    .manage-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #60a5fa;
+      text-decoration: underline;
+      font-size: 0.95rem;
+    }
 
-  .manage-link:hover {
-    color: #93c5fd;
-  }
-</style>
+    .manage-link:hover {
+      color: #bfdbfe;
+    }
+
+    .map-container {
+      margin-top: 1rem;
+      height: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #1e293b;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .sos-full {
+      grid-column: span 1;
+    }
+
+    @media (min-width: 768px) {
+      .sos-full {
+        grid-column: span 2;
+      }
+    }
+
+    .sos-buttons-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .sos-button {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    @media (min-width: 768px) {
+      .sos-button {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    .sos-button:hover {
+      transform: scale(1.08);
+    }
+
+    .sos-label {
+      margin-top: 0.5rem;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .fire { background-color: #dc2626; }
+    .medical { background-color: #16a34a; }
+    .police { background-color: #2563eb; }
+    .secure { background-color: #eab308; color: black; }
+  </style>
+</head>
+
+<body>
 
 <!-- Navbar -->
 <div class="navbar">
-  <h1>SERL - Emergency Response System</h1>
+  <h1 style="font-size: 1.5rem;">🛡️ SERL - Emergency Response</h1>
   <div>
     <a href="{{ route('dashboard') }}">Dashboard</a>
-
-    <!-- Logout Form -->
     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
       @csrf
-      <button type="submit" style="background: none; border: none; color: #facc15; font-weight: bold; cursor: pointer;">
-        Logout
-      </button>
+      <button type="submit">Logout</button>
     </form>
   </div>
 </div>
 
-
+<!-- Dashboard Layout -->
 <div class="dashboard-container">
   <div class="dashboard-grid">
 
-    <!-- SOS Alerts Card -->
-    <div class="dashboard-card">
-      <h3>🚨 Trigger SOS Alerts</h3>
-      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-        <button onclick="triggerSOS('fire')" class="sos-button sos-fire">🔥 Fire SOS</button>
-        <button onclick="triggerSOS('medical')" class="sos-button sos-medical">🏥 Medical SOS</button>
-        <button onclick="triggerSOS('police')" class="sos-button sos-police">🚓 Police SOS</button>
-        <button onclick="triggerSOS('secure_contact')" class="sos-button sos-secure">🛡️ Secure Contact</button>
-      </div>
-    </div>
-
-    <!-- Manage Contacts Card -->
-    <div class="dashboard-card">
+    <!-- Emergency Contacts -->
+    <div class="dashboard-card contact-card">
       <h3>📇 Emergency Contacts</h3>
-      <p>Keep your emergency contacts up to date for quick assistance during crises.</p>
+      <p>Keep your emergency contacts up to date for instant help during a crisis.</p>
       <a href="{{ route('contacts.index') }}" class="manage-link">Manage Contacts</a>
     </div>
 
-    <!-- Map Card -->
-    <div class="dashboard-card">
-      <h3>🌍 Live Location Map</h3>
+    <!-- Map Location -->
+    <div class="dashboard-card contact-card">
+      <h3>🌍 Your Live Location</h3>
       <div id="map" class="map-container"></div>
+    </div>
+
+    <!-- SOS Section -->
+    <div class="dashboard-card sos-full contact-card">
+      <h3>🚨 Trigger SOS Alerts</h3>
+      <div class="sos-buttons-row">
+        <div>
+          <button class="sos-button fire" onclick="triggerSOS('fire')">🔥</button>
+          <div class="sos-label">Fire</div>
+        </div>
+        <div>
+          <button class="sos-button medical" onclick="triggerSOS('medical')">🏥</button>
+          <div class="sos-label">Medical</div>
+        </div>
+        <div>
+          <button class="sos-button police" onclick="triggerSOS('police')">🚓</button>
+          <div class="sos-label">Police</div>
+        </div>
+        <div>
+          <button class="sos-button secure" onclick="triggerSOS('secure_contact')">🛡️</button>
+          <div class="sos-label">Secure</div>
+        </div>
+      </div>
     </div>
 
   </div>
 </div>
 
-<!-- Leaflet Map JS and CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- Map & SOS JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const apiKey = 'AIzaSyCPB6SUK0fHtKOC-CEzxwVoPGTca6uFfNA'; // Replace with your key
-  let map;
+  const apiKey = 'AIzaSyCPB6SUK0fHtKOC-CEzxwVoPGTca6uFfNA'; // Replace with your real API key
 
   async function getGoogleLocation() {
     const response = await fetch(`https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`, {
@@ -172,10 +261,11 @@
           longitude: location.lng,
           message: 'Emergency: ' + type
         })
-      }).then(response => response.json()).then(data => {
-        alert(`SOS Sent: ${data.status}`);
-      }).catch(error => {
-        console.error('Error:', error);
+      })
+      .then(res => res.json())
+      .then(data => alert(`SOS Sent: ${data.status}`))
+      .catch(err => {
+        console.error('SOS error:', err);
         alert('SOS Failed');
       });
     } catch (err) {
@@ -187,13 +277,18 @@
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       const location = await getGoogleLocation();
-      map = L.map('map').setView([location.lat, location.lng], 14);
+      const map = L.map('map').setView([location.lat, location.lng], 14);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
-      L.marker([location.lat, location.lng]).addTo(map).bindPopup('Your Location').openPopup();
-    } catch (error) {
-      console.error('Map error:', error);
+      L.marker([location.lat, location.lng]).addTo(map)
+        .bindPopup('You are here.')
+        .openPopup();
+    } catch (err) {
+      console.error('Map load error:', err);
     }
   });
 </script>
+
+</body>
+</html>
