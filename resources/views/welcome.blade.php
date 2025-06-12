@@ -72,7 +72,7 @@
 
     .btn-secondary {
       background-color: transparent;
-      border: 2px solid #ffcc00;
+      border: 2px solid rgb(227, 207, 128);
       color: #ffcc00;
     }
 

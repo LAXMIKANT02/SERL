@@ -40,7 +40,7 @@
 
         <!-- Submit Button -->
         <div>
-            <x-primary-button class="w-full justify-center py-2 text-lg">
+            <x-primary-button class="w-full justify-center py-2 text-lg btn-glow">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>

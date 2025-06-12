@@ -24,6 +24,28 @@
             left: 0;
             z-index: -1;
         }
+
+        .bg-glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px); /* Safari support */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 1rem;
+        }
+
+        .btn-glow {
+        background-color: #6366f1; /* indigo-500 */
+        color: light;
+        box-shadow: 0 0 15px #6366f1aa;
+        transition: all 0.3s ease-in-out;
+        }
+
+        .btn-glow:hover {
+        box-shadow: 0 0 25px #6366f1cc;
+        transform: translateY(-2px);
+        }
+
+
     </style>
 </head>
 <body class="font-sans text-gray-900 antialiased bg-gray-900">
@@ -39,8 +61,8 @@
             </a>
         </div>
 
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-            {{ $slot }}
+        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-glass shadow-md sm:rounded-lg">
+     {{ $slot }}
         </div>
     </div>
 
