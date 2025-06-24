@@ -236,7 +236,7 @@
 <!-- Map & SOS JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const apiKey = 'AIzaSyCPB6SUK0fHtKOC-CEzxwVoPGTca6uFfNA'; // Replace with your real API key
+  const apiKey = '{API_key}'; // Replace with your real API key
 
   async function getGoogleLocation() {
     const response = await fetch(`https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`, {
