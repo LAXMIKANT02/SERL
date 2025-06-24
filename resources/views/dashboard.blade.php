@@ -1,4 +1,3 @@
-<!-- layout.blade.php or dashboard.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +20,10 @@
       justify-content: space-between;
       align-items: center;
       color: #facc15;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
 
     .navbar a, .navbar button {
@@ -36,7 +35,7 @@
       border: none;
       font-size: 1rem;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
 
     .navbar a:hover, .navbar button:hover {
@@ -65,12 +64,11 @@
     .dashboard-card {
       background: rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 1rem;
       padding: 1.5rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
       color: #f1f5f9;
       text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
       transition: transform 0.3s ease;
     }
 
@@ -84,30 +82,6 @@
       color: #e2e8f0;
     }
 
-    .contact-card {
-      background: linear-gradient(to bottom right, rgba(56, 189, 248, 0.08), rgba(255, 255, 255, 0.04));
-      border: 1px solid rgba(96, 165, 250, 0.4);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
-      transition: all 0.3s ease-in-out;
-    }
-
-    .contact-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 28px rgba(96, 165, 250, 0.3);
-    }
-
-    .manage-link {
-      display: inline-block;
-      margin-top: 1rem;
-      color: #60a5fa;
-      text-decoration: underline;
-      font-size: 0.95rem;
-    }
-
-    .manage-link:hover {
-      color: #bfdbfe;
-    }
-
     .map-container {
       margin-top: 1rem;
       height: 220px;
@@ -115,6 +89,17 @@
       overflow: hidden;
       background-color: #1e293b;
       box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .manage-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #60a5fa;
+      text-decoration: underline;
+    }
+
+    .manage-link:hover {
+      color: #bfdbfe;
     }
 
     .sos-full {
@@ -127,55 +112,46 @@
       }
     }
 
-    .sos-buttons-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+    .sos-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 1rem;
+      justify-content: center;
       margin-top: 1rem;
     }
 
     .sos-button {
-      width: 90px;
-      height: 90px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    }
-
-    @media (min-width: 768px) {
-      .sos-button {
-        width: 100px;
-        height: 100px;
-      }
+      transition: transform 0.3s ease, box-shadow 0.3s;
+      animation: pulse 2s infinite;
     }
 
     .sos-button:hover {
-      transform: scale(1.08);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
     }
 
-    .sos-label {
-      margin-top: 0.5rem;
-      color: #e2e8f0;
-      font-size: 0.9rem;
-      text-align: center;
-    }
+    .sos-button.fire { background-color: #dc2626; }
+    .sos-button.medical { background-color: #059669; }
+    .sos-button.police { background-color: #2563eb; }
+    .sos-button.secure { background-color: #facc15; color: black; }
 
-    .fire { background-color: #dc2626; }
-    .medical { background-color: #16a34a; }
-    .police { background-color: #2563eb; }
-    .secure { background-color: #eab308; color: black; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+      50% { box-shadow: 0 0 15px 10px rgba(255,255,255,0.1); }
+    }
   </style>
 </head>
-
 <body>
 
 <!-- Navbar -->
@@ -190,53 +166,41 @@
   </div>
 </div>
 
-<!-- Dashboard Layout -->
+<!-- Dashboard -->
 <div class="dashboard-container">
   <div class="dashboard-grid">
 
     <!-- Emergency Contacts -->
-    <div class="dashboard-card contact-card">
+    <div class="dashboard-card">
       <h3>📇 Emergency Contacts</h3>
       <p>Keep your emergency contacts up to date for instant help during a crisis.</p>
       <a href="{{ route('contacts.index') }}" class="manage-link">Manage Contacts</a>
     </div>
 
-    <!-- Map Location -->
-    <div class="dashboard-card contact-card">
+    <!-- Live Map -->
+    <div class="dashboard-card">
       <h3>🌍 Your Live Location</h3>
       <div id="map" class="map-container"></div>
     </div>
 
-    <!-- SOS Section -->
-    <div class="dashboard-card sos-full contact-card">
+    <!-- SOS Buttons -->
+    <div class="dashboard-card sos-full">
       <h3>🚨 Trigger SOS Alerts</h3>
-      <div class="sos-buttons-row">
-        <div>
-          <button class="sos-button fire" onclick="triggerSOS('fire')">🔥</button>
-          <div class="sos-label">Fire</div>
-        </div>
-        <div>
-          <button class="sos-button medical" onclick="triggerSOS('medical')">🏥</button>
-          <div class="sos-label">Medical</div>
-        </div>
-        <div>
-          <button class="sos-button police" onclick="triggerSOS('police')">🚓</button>
-          <div class="sos-label">Police</div>
-        </div>
-        <div>
-          <button class="sos-button secure" onclick="triggerSOS('secure_contact')">🛡️</button>
-          <div class="sos-label">Secure</div>
-        </div>
+      <div class="sos-buttons">
+        <button class="sos-button fire" onclick="triggerSOS('fire')">🔥</button>
+        <button class="sos-button medical" onclick="triggerSOS('medical')">🏥</button>
+        <button class="sos-button police" onclick="triggerSOS('police')">🚓</button>
+        <button class="sos-button secure" onclick="triggerSOS('secure_contact')">🛡️</button>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- Map & SOS JS -->
+<!-- Leaflet Map + Voice Alert -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const apiKey = 'AIzaSyCPB6SUK0fHtKOC-CEzxwVoPGTca6uFfNA'; // Replace with your real API key
+  const apiKey = 'API_KEY_HERE'; // Your API Key
 
   async function getGoogleLocation() {
     const response = await fetch(`https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`, {
@@ -247,6 +211,19 @@
   }
 
   async function triggerSOS(type) {
+    const messages = {
+      fire: "Fire SOS sent.",
+      medical: "Medical SOS sent.",
+      police: "Police SOS sent.",
+      secure_contact: "Secure contact alert sent."
+    };
+
+    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+    audio.play();
+
+    const utterance = new SpeechSynthesisUtterance(messages[type] || "SOS sent");
+    speechSynthesis.speak(utterance);
+
     try {
       const location = await getGoogleLocation();
       fetch("{{ route('sos.store') }}", {
@@ -261,13 +238,9 @@
           longitude: location.lng,
           message: 'Emergency: ' + type
         })
-      })
-      .then(res => res.json())
-      .then(data => alert(`SOS Sent: ${data.status}`))
-      .catch(err => {
-        console.error('SOS error:', err);
-        alert('SOS Failed');
-      });
+      }).then(res => res.json())
+        .then(data => alert(`SOS Sent: ${data.status}`))
+        .catch(err => alert('SOS Failed'));
     } catch (err) {
       console.error('Geolocation error:', err);
       alert('Location not found');
@@ -281,11 +254,9 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
-      L.marker([location.lat, location.lng]).addTo(map)
-        .bindPopup('You are here.')
-        .openPopup();
+      L.marker([location.lat, location.lng]).addTo(map).bindPopup('You are here').openPopup();
     } catch (err) {
-      console.error('Map load error:', err);
+      console.error('Map error:', err);
     }
   });
 </script>
